@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Bachata Fusion – Bénévoles</title>
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Bénévoles BF">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <div class="brand">
+        <img src="/logo.png" alt="Bachata Fusion">
+        <h1 class="brand-title">Espace bénévoles</h1>
+      </div>
+      <div class="who" id="who" hidden></div>
+    </div>
+  </header>
+
+  <nav class="tabs" id="tabs" hidden>
+    <div class="wrap" role="tablist">
+      <button role="tab" data-tab="upcoming" aria-selected="true">Prochains événements</button>
+      <button role="tab" data-tab="mine" aria-selected="false">Mes événements<span class="count" id="mine-count" hidden></span></button>
+    </div>
+  </nav>
+
+  <main class="wrap" id="main"></main>
+
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

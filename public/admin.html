@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Bachata Fusion – Admin</title>
+  <meta name="theme-color" content="#000000">
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="/icon-192.png" type="image/png">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <div class="brand">
+        <img src="/logo.png" alt="Bachata Fusion">
+        <h1 class="brand-title">Administration</h1>
+      </div>
+      <div class="who">
+        <a href="/" target="_blank" style="color:inherit">Vue bénévoles ↗</a>
+        <div id="account"></div>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tabs" id="tabs" hidden>
+    <div class="wrap" role="tablist">
+      <button role="tab" data-tab="upcoming" aria-selected="true">Soirées à venir</button>
+      <button role="tab" data-tab="history" aria-selected="false">Historique</button>
+      <button role="tab" data-tab="volunteers" aria-selected="false">Bénévoles</button>
+    </div>
+  </nav>
+
+  <main class="wrap" id="main"></main>
+
+  <script type="module" src="/admin.js"></script>
+</body>
+</html>

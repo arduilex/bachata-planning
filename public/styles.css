@@ -1,0 +1,158 @@
+/* Thème sombre aux couleurs du logo Bachata Fusion : noir, blanc, magenta. */
+:root {
+  --bg: #000000;
+  --surface: #111111;
+  --surface-2: #1a1a1a;
+  --text: #ffffff;
+  --muted: #8c8c8c;
+  --border: #242424;
+  --accent: #ff17c1;
+  --accent-soft: rgb(255 23 193 / 12%);
+  --danger: #ff6b6b;
+  --radius: 16px;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.4;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.wrap { max-width: 640px; margin: 0 auto; padding: 0 16px 80px; }
+
+/* En-tête */
+header.top { padding: calc(env(safe-area-inset-top) + 14px) 0 6px; }
+header.top .wrap { padding-bottom: 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand img { width: 60px; height: 60px; display: block; }
+.brand-title { font-size: 17px; font-weight: 600; margin: 0; letter-spacing: .01em; }
+.who { text-align: right; font-size: 13px; color: var(--muted); }
+.who strong { display: block; color: var(--text); font-size: 16px; font-weight: 600; }
+.who button { background: none; border: 0; color: var(--muted); text-decoration: underline; padding: 0; font: inherit; cursor: pointer; }
+
+/* Onglets */
+nav.tabs { position: sticky; top: 0; z-index: 5; background: var(--bg); border-bottom: 1px solid var(--border); }
+nav.tabs .wrap { display: flex; padding-bottom: 0; overflow-x: auto; }
+nav.tabs button {
+  flex: 1 0 auto; background: none; border: 0; padding: 14px 10px; font: inherit; font-size: 15px; font-weight: 600;
+  color: var(--muted); border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap;
+}
+nav.tabs button[aria-selected="true"] { color: var(--text); border-bottom-color: var(--accent); }
+.count { color: var(--accent); margin-left: 4px; }
+
+h2.section { font-size: 13px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; margin: 28px 0 10px; }
+
+/* Carte d'événement */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin: 16px 0; overflow: hidden; }
+.card-head { padding: 16px 16px 12px; }
+
+/* Événement repliable : seuls la date et le titre sont visibles par défaut. */
+details.event > summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; list-style: none; padding-bottom: 16px; }
+details.event > summary::-webkit-details-marker { display: none; }
+.chevron { width: 10px; height: 10px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); margin: -4px 4px 0 0; flex-shrink: 0; transition: transform .15s; }
+details.event[open] > summary .chevron { transform: rotate(-135deg); margin-top: 4px; }
+.card.event { margin: 10px 0; }
+.card-head .date { font-size: 13px; color: var(--accent); font-weight: 600; text-transform: capitalize; }
+.card-head h3 { margin: 2px 0 0; font-size: 20px; font-weight: 700; }
+.card-head .sub { margin-top: 2px; font-size: 13px; color: var(--muted); }
+.badge { font-size: 13px; color: var(--muted); }
+
+/* Créneaux : intitulé en gros, horaire en petit */
+.slots { list-style: none; margin: 0; padding: 0; }
+.slot { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-top: 1px solid var(--border); }
+.slot-main { flex: 1; min-width: 0; }
+.slot-label { display: block; font-size: 18px; font-weight: 700; }
+.slot-time { display: block; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+/* Toujours présente et sur une seule ligne : l'inscription ne change pas la hauteur du créneau. */
+.slot-names { display: block; font-size: 13px; color: var(--muted); margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.slot-names b { color: var(--text); font-weight: 600; }
+/* Colonnes de largeur fixe : compteur et action restent alignés d'une ligne à l'autre. */
+.slot-side { display: grid; grid-template-columns: 36px 104px; align-items: center; gap: 10px; flex-shrink: 0; }
+.slot-side > .btn, .slot-side > .full-tag { width: 100%; text-align: center; }
+.places { font-variant-numeric: tabular-nums; font-weight: 700; font-size: 14px; color: var(--muted); text-align: right; }
+.slot.full .places { color: var(--accent); }
+.slot.mine { background: var(--accent-soft); }
+
+/* Boutons */
+.btn {
+  font: inherit; font-weight: 600; font-size: 14px; border-radius: 999px; padding: 9px 16px; cursor: pointer;
+  border: 1px solid var(--accent); background: var(--accent); color: #000; white-space: nowrap;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none;
+}
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.btn.ghost { background: transparent; color: var(--text); border-color: var(--border); }
+.btn.danger { background: transparent; color: var(--danger); border-color: rgb(255 107 107 / 35%); }
+.btn.small { padding: 6px 12px; font-size: 13px; }
+.btn.block { width: 100%; }
+.full-tag { font-size: 13px; color: var(--muted); }
+
+/* Remarques */
+details.remarks { border-top: 1px solid var(--border); }
+details.remarks summary { padding: 12px 16px; cursor: pointer; font-size: 14px; color: var(--muted); list-style: none; }
+details.remarks summary::-webkit-details-marker { display: none; }
+details.remarks[open] summary { color: var(--text); }
+.remarks-body { padding: 0 16px 14px; }
+.remark { border-left: 2px solid var(--border); padding: 2px 0 2px 10px; margin-bottom: 10px; font-size: 14px; }
+.remark .meta { font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
+.remark .meta b { color: var(--text); }
+.remark p { margin: 2px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+form.inline { display: flex; gap: 8px; margin-top: 8px; align-items: flex-end; }
+
+textarea, input, select {
+  font: inherit; font-size: 16px; color: var(--text); background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 9px 12px; width: 100%; min-width: 0;
+}
+textarea:focus, input:focus, select:focus { outline: none; border-color: var(--accent); }
+textarea { resize: vertical; min-height: 42px; }
+input[type="date"], input[type="time"] { color-scheme: dark; }
+
+.empty { text-align: center; color: var(--muted); padding: 56px 16px; }
+.empty .btn { margin-top: 12px; }
+
+/* Choix du prénom */
+.picker { text-align: center; padding-top: 12px; }
+.picker img { width: 180px; height: 180px; }
+.picker p { color: var(--muted); margin: 8px 0 20px; }
+.names { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
+.names button {
+  font: inherit; font-size: 17px; font-weight: 600; padding: 16px 12px; border-radius: var(--radius);
+  border: 1px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer;
+}
+.names button:hover, .names button:focus-visible { border-color: var(--accent); }
+
+.toast {
+  position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom) + 20px); transform: translateX(-50%);
+  background: var(--surface-2); border: 1px solid var(--border); color: var(--text); padding: 11px 16px;
+  border-radius: 12px; font-size: 14px; z-index: 30; max-width: calc(100% - 32px);
+}
+.toast.error { border-color: var(--danger); color: var(--danger); }
+
+/* Administration */
+.row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.row > * { flex: 1 1 140px; }
+.row > .btn, .row > .places { flex: 0 0 auto; }
+.panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin: 16px 0; }
+.panel h3 { margin: 0 0 12px; font-size: 16px; }
+label.field { display: grid; gap: 4px; font-size: 13px; color: var(--muted); font-weight: 600; }
+.admin-slot { padding: 12px 16px; border-top: 1px solid var(--border); display: grid; gap: 8px; }
+.admin-slot.full .places { color: var(--accent); }
+.admin-slot .fields { display: grid; grid-template-columns: 2fr 1fr 1fr 70px; gap: 6px; }
+@media (max-width: 520px) {
+  .admin-slot .fields { grid-template-columns: 1fr 1fr; }
+}
+.chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.chip { display: inline-flex; align-items: center; gap: 2px; background: var(--surface-2); border-radius: 999px; padding: 3px 4px 3px 10px; font-size: 13px; font-weight: 600; }
+.chip button { border: 0; background: none; color: var(--muted); cursor: pointer; font-size: 15px; line-height: 1; padding: 2px 6px; border-radius: 999px; }
+.chip button:hover { color: var(--danger); }
+.vol-row { display: flex; gap: 8px; align-items: center; padding: 8px 0; border-top: 1px solid var(--border); }
+.vol-row:first-of-type { border-top: 0; }
+.vol-row input { flex: 1; }
+.muted { color: var(--muted); }
+.inactive { opacity: .55; }
+.login { max-width: 420px; margin: 40px auto; }

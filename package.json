@@ -1,0 +1,17 @@
+{
+  "name": "bachata-planning",
+  "version": "2.0.0",
+  "description": "Bachata Fusion – Espace bénévoles : planning des soirées, inscriptions et administration (Firebase)",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "firebase emulators:start --only hosting",
+    "deploy": "firebase deploy --only hosting,firestore",
+    "deploy:rules": "firebase deploy --only firestore:rules"
+  },
+  "devDependencies": {
+    "firebase-tools": "15.34.0"
+  }
+}
