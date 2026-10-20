@@ -13,7 +13,7 @@ Un seul lien à partager dans Messenger : chaque bénévole choisit son prénom 
 |---|---|
 | **Firebase Hosting** | Héberge les pages (`public/`) en HTTPS |
 | **Cloud Firestore** | Base de données temps réel |
-| **Firebase Authentication** | Connexion anonyme (bénévoles) et Google (administrateur) |
+| **Firebase Authentication** | Connexion anonyme (bénévoles) et compte Google (administrateur) |
 | `firestore.rules` | Règles de sécurité : limite de places, chacun ne modifie que ses inscriptions, admin seul gestionnaire |
 
 Aucun serveur à maintenir : tout fonctionne sur l'offre gratuite **Spark** de Firebase.
@@ -25,6 +25,7 @@ public/
   firebase.js            → initialisation Firebase (config fournie par Hosting)
   store.js               → lecture temps réel des soirées
   templates.js           → modèles de soirée et liste initiale des bénévoles
+  config.js              → UID des administrateurs
   common.js, styles.css  → fonctions et styles partagés
   sw.js, manifest.webmanifest, logo/icônes → PWA
 firestore.rules          → règles de sécurité
@@ -40,7 +41,6 @@ firebase.json, .firebaserc → configuration Firebase (projet planning-events)
 | `events/{id}` | `type`, `typeName`, `title`, `date` (AAAA-MM-JJ) |
 | `events/{id}/slots/{id}` | `label`, `start`, `end` (HH:MM), `capacity`, `position`, `volunteers` (liste d'IDs) |
 | `events/{id}/remarks/{id}` | `volunteerId`, `text`, `createdAt` |
-| `admins/{email}` | Un document par administrateur (l'ID est l'adresse e-mail Google) |
 
 Les horaires avant midi (ex. `00:00`, `02:00`) sont considérés comme la nuit suivant la date de la soirée.
 
@@ -93,15 +93,22 @@ npm run deploy:rules
 
 Si la commande signale une erreur dans `firestore.rules`, elle indique la ligne concernée.
 
-### 6. Se déclarer administrateur
+### 6. Compte administrateur
 
-Dans la console Firebase → **Firestore Database** → **Démarrer une collection** :
+L'administrateur se connecte avec son **compte Google** (pas de mot de passe ni de clé propre à l'application).
+Le compte autorisé est identifié par son **UID Firebase**, déjà configuré :
 
-- ID de la collection : `admins`
-- ID du document : **ton adresse e-mail Google exacte** (ex. `prenom.nom@gmail.com`)
-- Ajouter un champ quelconque, par exemple `role` = `admin`, puis **Enregistrer**
+```
+T3ZA4bGuNNQAwgQxK6RtAQbG1v82
+```
 
-Pour ajouter un autre administrateur plus tard, créer un autre document dans `admins` avec son e-mail.
+Il est déclaré à deux endroits, qui doivent rester identiques :
+
+- `firestore.rules` → fonction `adminUids()` (c'est elle qui protège réellement les données) ;
+- `public/config.js` → `ADMIN_UIDS` (sert seulement à afficher ou non l'interface admin).
+
+Pour ajouter un autre administrateur : il se connecte une première fois sur `/admin`, la page « Accès refusé » affiche son UID ; l'ajouter aux deux listes puis `npm run deploy`.
+L'UID d'un compte est aussi visible dans la console Firebase → **Authentication → Users**.
 
 ### 7. Tester en local
 
@@ -121,7 +128,7 @@ Arrêter avec `Ctrl + C`.
 
 ### 8. Première utilisation (espace admin)
 
-1. Ouvrir `/admin` → **Se connecter avec Google** (avec le compte déclaré à l'étape 6).
+1. Ouvrir `/admin` → **Se connecter avec Google** (avec le compte administrateur de l'étape 6).
 2. Onglet **Bénévoles** → **Créer les 9 bénévoles** (Émilie, Cédric, Aurore, Axel, Estelle, Alex, Youness, Alexandre, Kévin).
 3. Onglet **Soirées à venir** → choisir le type et la date → **Créer**.
 
@@ -164,7 +171,7 @@ Chaque soirée créée copie les créneaux du modèle ; ils restent ensuite modi
 | Problème | Solution |
 |---|---|
 | « Configuration Firebase introuvable » | Lancer avec `npm start` (pas en ouvrant le fichier HTML directement) et vérifier qu'une application Web existe (étape 4.3). |
-| « Accès refusé » dans l'admin | Le document `admins/{e-mail}` n'existe pas ou l'e-mail ne correspond pas exactement (étape 6). |
+| « Accès refusé » dans l'admin | Le compte Google connecté n'est pas celui de l'UID configuré (étape 6). La page affiche l'UID du compte connecté pour comparer. |
 | « Action refusée » ou chargement impossible | Les règles ne sont pas publiées : `npm run deploy:rules`. Vérifier aussi que la connexion Anonyme est activée. |
 | La fenêtre Google ne s'ouvre pas | Autoriser les pop-ups ; vérifier dans Authentication → Settings → Domaines autorisés que `localhost` et `planning-events.web.app` sont présents. |
 | Le port 5050 est occupé | Changer `emulators.hosting.port` dans `firebase.json`. |

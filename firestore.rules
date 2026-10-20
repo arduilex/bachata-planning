@@ -3,9 +3,14 @@ rules_version = '2';
 // Règles de sécurité Bachata Fusion – Espace bénévoles.
 // - Bénévoles : connexion anonyme, liée à un prénom via claims/{uid}.
 //   Ils ne peuvent ajouter ou retirer QUE leur propre prénom d'un créneau, dans la limite des places.
-// - Administrateur : connexion Google, adresse e-mail présente dans la collection admins.
+// - Administrateur : connexion Google, UID du compte présent dans adminUids().
+//   Pour ajouter un administrateur : ajouter son UID ici ET dans public/config.js.
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    function adminUids() {
+      return ['T3ZA4bGuNNQAwgQxK6RtAQbG1v82'];
+    }
 
     function signedIn() {
       return request.auth != null;
@@ -13,9 +18,8 @@ service cloud.firestore {
 
     function isAdmin() {
       return signedIn()
-        && request.auth.token.get('email', null) != null
-        && request.auth.token.get('email_verified', false) == true
-        && exists(/databases/$(database)/documents/admins/$(request.auth.token.email));
+        && request.auth.token.firebase.sign_in_provider == 'google.com'
+        && request.auth.uid in adminUids();
     }
 
     function myVolunteer() {
@@ -52,11 +56,6 @@ service cloud.firestore {
           ||
           (removed.hasOnly([me]) && removed.size() == 1 && added.size() == 0)
         );
-    }
-
-    match /admins/{email} {
-      allow read: if signedIn() && request.auth.token.get('email', null) == email;
-      allow write: if false; // à gérer depuis la console Firebase
     }
 
     match /volunteers/{volunteerId} {

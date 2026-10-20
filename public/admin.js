@@ -2,12 +2,13 @@ import {
   GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signOut,
 } from 'https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js';
 import {
-  collection, doc, getDoc, getDocs, onSnapshot, query, orderBy, addDoc, updateDoc, writeBatch,
+  collection, doc, getDocs, onSnapshot, query, orderBy, addDoc, updateDoc, writeBatch,
   runTransaction, arrayUnion, arrayRemove, serverTimestamp,
 } from 'https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js';
 import { auth, db } from '/firebase.js';
 import { watchEvents } from '/store.js';
 import { TEMPLATES, DEFAULT_CAPACITY, INITIAL_VOLUNTEERS } from '/templates.js';
+import { ADMIN_UIDS } from '/config.js';
 import { esc, fmtTime, fmtDate, fmtDateTime, toast, errorMessage, scheduler } from '/common.js';
 
 const state = {
@@ -41,11 +42,8 @@ onAuthStateChanged(auth, async (user) => {
   if (!user || user.isAnonymous) return renderLogin();
 
   account.innerHTML = `<button type="button" data-action="logout">Déconnexion</button>`;
-  let isAdmin = false;
-  try {
-    isAdmin = (await getDoc(doc(db, 'admins', user.email))).exists();
-  } catch { /* lecture refusée : pas administrateur */ }
-  if (!isAdmin) return renderNotAdmin(user.email);
+  // Contrôle d'affichage uniquement : la vraie protection est dans firestore.rules.
+  if (!ADMIN_UIDS.includes(user.uid)) return renderNotAdmin(user);
 
   stopVolunteers = onSnapshot(collection(db, 'volunteers'), (snap) => {
     state.volunteers = snap.docs.map((d) => ({ id: d.id, ...d.data() }))
@@ -70,13 +68,13 @@ function renderLogin() {
     </div>`;
 }
 
-function renderNotAdmin(email) {
+function renderNotAdmin(user) {
   main.innerHTML = `
     <div class="panel login">
       <h3>Accès refusé</h3>
-      <p class="muted">Le compte <b>${esc(email)}</b> n'est pas administrateur.</p>
-      <p class="muted" style="font-size:13px">Pour l'autoriser : console Firebase → Firestore → collection
-        <code>admins</code> → document dont l'ID est cette adresse e-mail (voir README).</p>
+      <p class="muted">Le compte <b>${esc(user.email)}</b> n'est pas administrateur.</p>
+      <p class="muted" style="font-size:13px">UID : <code>${esc(user.uid)}</code><br>
+        Pour l'autoriser, ajouter cet UID dans <code>firestore.rules</code> et <code>public/config.js</code> (voir README).</p>
     </div>`;
 }
 
