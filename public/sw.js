@@ -1,6 +1,6 @@
 // Service worker minimal : l'interface reste disponible hors connexion,
 // les données viennent toujours de Firestore (domaine externe, non mis en cache).
-const CACHE = 'bf-shell-v3';
+const CACHE = 'bf-shell-v4';
 const SHELL = ['/', '/index.html', '/styles.css', '/common.js', '/firebase.js', '/store.js', '/app.js', '/logo.png', '/manifest.webmanifest'];
 
 self.addEventListener('install', (e) => {

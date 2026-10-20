@@ -14,6 +14,7 @@ const state = {
   volunteers: [],
   me: null,
   claimLoaded: false,
+  volunteersLoaded: false,
   tab: storage.get('bf-tab') || 'upcoming',
   openEvents: new Set(),
   openRemarks: new Set(),
@@ -47,6 +48,7 @@ onAuthStateChanged(auth, (user) => {
   onSnapshot(collection(db, 'volunteers'), (snap) => {
     state.volunteers = snap.docs.map((d) => ({ id: d.id, ...d.data() }))
       .sort((a, b) => a.name.localeCompare(b.name, 'fr'));
+    state.volunteersLoaded = true;
     scheduleRender();
   }, showFatal);
 
@@ -79,7 +81,7 @@ const myEvents = () => upcoming().filter((e) => e.slots.some(isMine));
 // ---------------------------------------------------------------------------
 
 function render() {
-  if (!state.claimLoaded) return;
+  if (!state.claimLoaded || !state.volunteersLoaded) return;
   const active = state.volunteers.filter((v) => v.active);
   if (!state.me || !active.some((v) => v.id === state.me)) return renderPicker(active);
 
@@ -106,6 +108,10 @@ function render() {
 function renderPicker(active) {
   who.hidden = true;
   tabs.hidden = true;
+  if (!active.length) {
+    main.innerHTML = `<div class="empty"><p>Aucun bénévole n'est encore inscrit.<br>L'administrateur doit d'abord créer la liste des bénévoles.</p></div>`;
+    return;
+  }
   main.innerHTML = `
     <section class="picker">
       <p>Choisis ton prénom pour accéder au planning.</p>
